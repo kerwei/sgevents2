@@ -18,7 +18,7 @@ $("#slider").bind("userValuesChanged", function(e, data){
   vm.endate(data.values.max);
   f = 0;
   // Clear all markers currently on the map
-  clearMarkers();
+  clearMarkers(filtered);
   filtered = [];
   // FIltered markers
   vm.compevents().forEach(function(k){

@@ -1,9 +1,11 @@
 var map, popWindow, vm, j, c, f;
 var markers = [];
 var filtered = [];
+var clicked_marker;
 var event_all = [];
 var ichi = new Date("2017-07-15");
 var nichi = new Date("2017-07-31");
+var default_marker = "http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png"
 
 // View Model
 var ViewModel = function() {
@@ -82,9 +84,10 @@ function dropMarker(thismarker) {
 }
 
 // Remvoe all markers
-function clearMarkers() {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
+function clearMarkers(mrkr_array) {
+    console.log("Clearing markers..")
+    for (var i = 0; i < mrkr_array.length; i++) {
+      mrkr_array[i].setMap(null);
     }
 }
 
@@ -114,6 +117,8 @@ function loadJSON() {
                         name: k.location_name,
                         events: k.event,
                     });
+                    filtered = markers;
+                    
                     // Adds all events to the observable array
                     k.event.forEach(function(m) {
                         vm.addevent(m, markers[j]);
@@ -191,16 +196,31 @@ function loadStatic() {
 // Displays the info window to the selected marker
 function makePopVisible() {
     var marker = this;
+
+    if (clicked_marker != null){
+        clicked_marker.setIcon(default_marker);
+    };
+
+    clicked_marker = marker;
+
+    this.setIcon(pinSymbol('blue'));
     // Creates the html output of the list of events of the selected location
     var itinerary = genEventList(marker.events);
     // Sets the html content to the observable and sets visibility to true
     vm.eventlist(itinerary);
     vm.name(marker.name);
     vm.winPopVisible(true);
+
+    var infotext = '<div id="popWindow" visible=true >\
+                    <h3>' + marker.name + '</h3>\
+                    <div>' + itinerary + '</div>\
+                </div>';
+
     // Centers the map on the selected marker and opens the info window
     map.setCenter(marker.getPosition());
     map.panBy(0, -150);
-    popWindow.setContent($('#popWindow').html());
+    //popWindow.setContent($('#popWindow').html());
+    popWindow.setContent(infotext);
     popWindow.open(map, marker);
 }
 
@@ -213,6 +233,26 @@ function genEventList(listevent){
         events = events + m.event_time + '</p><p id="eventname">' + m.event_name + '</p>';
     });
     return events;
+}
+
+function resetPin(){
+    console.log("Resetting pin..")
+    return {
+        path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+        scale: 1,
+        icon: default_marker
+    };
+}
+
+function pinSymbol(color) {
+    return {
+        path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+        fillColor: color,
+        fillOpacity: 1,
+        strokeColor: '#000',
+        strokeWeight: 2,
+        scale: 1
+    };
 }
 
 $(document).ready(function(){
