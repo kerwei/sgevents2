@@ -16,19 +16,12 @@
   <body>
     <!-- THE MAP -->
     <div id="mapframe"></div>
-    <div hidden>
-    <!-- INFO WINDOW -->
-    <div id="popWindow" data-bind="visible: winPopVisible">
-        <h3 data-bind="text: name"></h3>
-        <div data-bind="html: eventlist"></div>
-    </div>
-    </div>
     <!-- DATE RANGE SLIDER -->
-    <div id="form">
+    <div id="form" data-bind="visible: winPopVisible">
       <div id="slider"></div>
     </div>
     <!-- SIDE LIST FOR EVENTS -->
-    <div id="eventlist">
+    <div id="eventlist" data-bind="visible: winPopVisible">
       <ul data-bind="foreach: compevents">
         </li>
           <div data-bind="click: $parent.clickmarker.bind($data, $index())">
@@ -40,8 +33,12 @@
         </li>
       </ul>
     </div>
+    <!-- DIALOG BOX -->
+    <div id="dialog" data-bind="title: dlgtitle">
+      <p data-bind="text: dlgmsg"></p>
+    </div>
     <script src="script/slider_config.js"></script>
     <script src="script/sgevent.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsuzNUhEAbtSeVG4p6jQEDjPaCWB03dR4&libraries=places"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsuzNUhEAbtSeVG4p6jQEDjPaCWB03dR4&libraries=places&callback=loadapp" onerror="googleError()"></script>
   </body>
 </html>

@@ -14,10 +14,12 @@ var ViewModel = function() {
     self.name = ko.observable();
     self.events = ko.observableArray();
     self.locations = ko.observableArray();
-    self.winPopVisible = ko.observable(false);
+    self.winPopVisible = ko.observable(true);
     self.eventlist = ko.observable();
     self.stdate = ko.observable(ichi);
     self.endate = ko.observable(nichi);
+    self.dlgtitle = ko.observable();
+    self.dlgmsg = ko.observable();
     
     // Filtered property - based on start and end dates
     self.compevents = ko.dependentObservable(function() {
@@ -34,7 +36,7 @@ var ViewModel = function() {
         self.locations.push({
             name: vmo.location_name,
             marker: mymarker,
-            winPopVisible: false,
+  /*          winPopVisible: false,*/
         });
     }.bind(this);
 
@@ -45,11 +47,6 @@ var ViewModel = function() {
             event_name: eo.event_name,
             marker: mymarker,
         });
-    }.bind(this);
-
-    // Sets the visibility flag of the info window
-    this.popvisible = function() {
-        self.winPopVisible = ko.observable(true);
     }.bind(this);
 
     // Event listener for the list of events
@@ -85,7 +82,6 @@ function dropMarker(thismarker) {
 
 // Remvoe all markers
 function clearMarkers(mrkr_array) {
-    console.log("Clearing markers..")
     for (var i = 0; i < mrkr_array.length; i++) {
       mrkr_array[i].setMap(null);
     }
@@ -137,60 +133,16 @@ function loadJSON() {
                     j++;
                 }
             });
-        },
-        // Error handling logic provided by Learner on 
-        // https://stackoverflow.com/questions/377644/jquery-ajax-error-handling-show-custom-exception-messages
-        error: function (response) {
-          var r = jQuery.parseJSON(response.responseText);
-          alert("Message: " + r.Message);
-          alert("StackTrace: " + r.StackTrace);
-          alert("ExceptionType: " + r.ExceptionType);
         }
     });
 }
 
-// Loads API data from static file instead of the API end point for testing
-// Avoids hitting the end point repeatedly
-function loadStatic() {
-    // Path to file
-    var jsonfile = '/script/sample_data.json';
-
-    // Loads the json file
-    var jsondata = $.getJSON(jsonfile)
-    .done(function(data) {
-        j = 0;
-        c = 0;
-
-        data.result.forEach(function(k) {
-            if (k.event) {
-                // Creates a new position object                
-                thislatlng = new google.maps.LatLng(k.lat, k.lng);
-                // Feeds the position object into the creation of the marker                
-                markers[j] = new google.maps.Marker({
-                    position: thislatlng,
-                    animation: google.maps.Animation.DROP,
-                    name: k.location_name,
-                    events: k.event,
-                });
-                // Adds all events to the observable array
-                k.event.forEach(function(m) {
-                    vm.addevent(m, markers[j]);
-                    event_all[c] = {
-                        eventdata: m,
-                        eventmarker: markers[j],
-                    };
-                    c++;
-                });
-                // Adds the location to the observable array
-                vm.addlocation(k, markers[j]);
-                // Adds the marker
-                dropMarker(markers[j]);
-                // Adds the marker
-                google.maps.event.addListener(markers[j], 'click', makePopVisible);
-                j++;
-            }
-        });
-    });
+//Error handling
+function googleError() {
+    vm.winPopVisible(false);
+    vm.dlgtitle("Map loading failed!");
+    vm.dlgmsg("Oops, something went wrong! Please check your connection and refresh the page!");
+    $( "#dialog" ).dialog();
 }
 
 // Displays the info window to the selected marker
@@ -206,10 +158,6 @@ function makePopVisible() {
     this.setIcon(pinSymbol('blue'));
     // Creates the html output of the list of events of the selected location
     var itinerary = genEventList(marker.events);
-    // Sets the html content to the observable and sets visibility to true
-    vm.eventlist(itinerary);
-    vm.name(marker.name);
-    vm.winPopVisible(true);
 
     var infotext = '<div id="popWindow" visible=true >\
                     <h3>' + marker.name + '</h3>\
@@ -219,7 +167,6 @@ function makePopVisible() {
     // Centers the map on the selected marker and opens the info window
     map.setCenter(marker.getPosition());
     map.panBy(0, -150);
-    //popWindow.setContent($('#popWindow').html());
     popWindow.setContent(infotext);
     popWindow.open(map, marker);
 }
@@ -236,7 +183,6 @@ function genEventList(listevent){
 }
 
 function resetPin(){
-    console.log("Resetting pin..")
     return {
         path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
         scale: 1,
@@ -255,11 +201,10 @@ function pinSymbol(color) {
     };
 }
 
-$(document).ready(function(){
+function loadapp() {
     initialize();
-
-    vm = new ViewModel();
     loadJSON();
-/*    loadStatic();*/
-    ko.applyBindings(vm);
-});
+}
+
+vm = new ViewModel();
+ko.applyBindings(vm);
