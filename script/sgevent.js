@@ -5,7 +5,7 @@ var clicked_marker;
 var event_all = [];
 var ichi = new Date("2017-07-15");
 var nichi = new Date("2017-07-31");
-var default_marker = "http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png"
+var default_marker = "http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png";
 
 ko.bindingHandlers.dateslider = {
     init: function(element, valueAccessor, allBindingsAccessor){
@@ -37,7 +37,7 @@ ko.bindingHandlers.dateslider = {
 
             f++;
           });
-        }
+        };
         $(element).slider(options);
     }
 };
@@ -183,9 +183,9 @@ function googleError() {
 function makePopVisible() {
     var marker = this;
 
-    if (clicked_marker != null){
+    if (clicked_marker !== null){
         clicked_marker.setIcon(default_marker);
-    };
+    }
 
     clicked_marker = marker;
 
@@ -193,6 +193,7 @@ function makePopVisible() {
     // Creates the html output of the list of events of the selected location
     var itinerary = genEventList(marker.events);
 
+    /*jshint multistr: true */
     var infotext = '<div id="popWindow" visible=true >\
                     <h3>' + marker.name + '</h3>\
                     <div>' + itinerary + '</div>\
