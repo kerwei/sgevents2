@@ -7,17 +7,52 @@ var ichi = new Date("2017-07-15");
 var nichi = new Date("2017-07-31");
 var default_marker = "http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png"
 
+ko.bindingHandlers.dateslider = {
+    init: function(element, valueAccessor, allBindingsAccessor){
+        var options = valueAccessor() || {};
+        var others =  allBindingsAccessor() || {};
+
+        options.change = function(e, ui) {
+            others.stdate(new Date(ui.values[0]));
+            others.endate(new Date(ui.values[1]));
+
+            f = 0;
+            // Clear all markers currently on the map
+            clearMarkers(filtered);
+            filtered = [];
+            // FIltered markers
+            vm.compevents().forEach(function(k) {
+                filtered[f] = new google.maps.Marker({
+                position: k.marker.position,
+                animation: google.maps.Animation.DROP,
+                name: k.marker.name,
+                events: k.marker.events,
+            });
+
+            // Re-drop the markers
+            dropMarker(filtered[f]);
+
+            // And add back the event listener
+            google.maps.event.addListener(filtered[f], 'click', makePopVisible);
+
+            f++;
+          });
+        }
+        $(element).slider(options);
+    }
+};
+
 // View Model
 var ViewModel = function() {
     var self = this;
 
+    self.stdate = ko.observable(new Date("2017-01-01"));
+    self.endate = ko.observable(new Date("2018-01-01"));
     self.name = ko.observable();
     self.events = ko.observableArray();
     self.locations = ko.observableArray();
     self.winPopVisible = ko.observable(true);
     self.eventlist = ko.observable();
-    self.stdate = ko.observable(ichi);
-    self.endate = ko.observable(nichi);
     self.dlgtitle = ko.observable();
     self.dlgmsg = ko.observable();
     
@@ -36,7 +71,6 @@ var ViewModel = function() {
         self.locations.push({
             name: vmo.location_name,
             marker: mymarker,
-  /*          winPopVisible: false,*/
         });
     }.bind(this);
 
