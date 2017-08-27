@@ -1,7 +1,7 @@
 var map, popWindow, vm, j, c, f;
 var markers = [];
 var filtered = [];
-var clicked_marker;
+var clicked_marker = null;
 var event_all = [];
 var ichi = new Date("2017-07-15");
 var nichi = new Date("2017-07-31");
