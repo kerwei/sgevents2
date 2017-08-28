@@ -18,8 +18,8 @@
     <div id="mapframe"></div>
     <!-- DATE RANGE SLIDER -->
     <div id="form" data-bind="visible: winPopVisible">
-      <span data-bind="text: 'Min: ' + $.format.date(stdate(), 'yyyy-MM-dd')"></span><br>
-      <span data-bind="text: 'Max: ' + $.format.date(endate(), 'yyyy-MM-dd')"></span>
+      <span data-bind="text: 'Start: ' + $.format.date(stdate(), 'yyyy-MM-dd')"></span><br>
+      <span data-bind="text: 'End: ' + $.format.date(endate(), 'yyyy-MM-dd')"></span>
       <div data-bind="dateslider: { range: true, min: stdate().getTime(), max: endate().getTime(), step: 60 * 60 * 24 * 1000, values:[new Date('2017-01-01').getTime(), new Date('2018-01-01').getTime()] }, stdate: stdate, endate: endate"></div>
     </div>
     <!-- SIDE LIST FOR EVENTS -->
