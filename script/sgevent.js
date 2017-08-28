@@ -22,21 +22,10 @@ ko.bindingHandlers.dateslider = {
             filtered = [];
             // FIltered markers
             vm.compevents().forEach(function(k) {
-                filtered[f] = new google.maps.Marker({
-                position: k.marker.position,
-                animation: google.maps.Animation.DROP,
-                name: k.marker.name,
-                events: k.marker.events,
+                filtered[f] = k.marker;
+                k.marker.setVisible(true);
+                f++;
             });
-
-            // Re-drop the markers
-            dropMarker(filtered[f]);
-
-            // And add back the event listener
-            google.maps.event.addListener(filtered[f], 'click', makePopVisible);
-
-            f++;
-          });
         };
         $(element).slider(options);
     }
@@ -116,8 +105,9 @@ function dropMarker(thismarker) {
 
 // Remvoe all markers
 function clearMarkers(mrkr_array) {
+    console.log("Cloaking markers..")
     for (var i = 0; i < mrkr_array.length; i++) {
-      mrkr_array[i].setMap(null);
+      mrkr_array[i].setVisible(false);
     }
 }
 
