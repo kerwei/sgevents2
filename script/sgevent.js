@@ -100,13 +100,13 @@ function initialize() {
 
 // Adds a marker to the map
 function dropMarker(thismarker) {
-    thismarker.setMap(map)
+    thismarker.setMap(map);
 }
 
 // Remvoe all markers
 function clearMarkers(mrkr_array) {
     for (var i = 0; i < mrkr_array.length; i++) {
-      mrkr_array[i].setVisible(false)
+      mrkr_array[i].setVisible(false);
     }
 }
 
