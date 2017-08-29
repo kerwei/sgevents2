@@ -171,7 +171,7 @@ function loadJSON() {
             else {
                 vm.dlgtitle("Unknown error.");
                 vm.dlgmsg("The content you requested may not be available.");
-            };
+            }
 
             $( "#dialog" ).dialog();
         }
