@@ -156,6 +156,24 @@ function loadJSON() {
                     j++;
                 }
             });
+        },
+        error: function (jqXHR, status, err) {
+            vm.winPopVisible(false);
+
+            if (status == 404) {
+                vm.dlgtitle("Error 404");
+                vm.dlgmsg("The content you are requesting is currently unavailable. Please try again later.");
+            }
+            else if (status == 403) {
+                vm.dlgtitle("Access denied.");
+                vm.dlgmsg("You are not authorized to access the requested data.");
+            }
+            else {
+                vm.dlgtitle("Unknown error.");
+                vm.dlgmsg("The content you requested may not be available.");
+            };
+
+            $( "#dialog" ).dialog();
         }
     });
 }

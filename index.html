@@ -25,7 +25,7 @@
     <!-- SIDE LIST FOR EVENTS -->
     <div id="eventlist" data-bind="visible: winPopVisible">
       <ul data-bind="foreach: compevents">
-        </li>
+        <li>
           <div data-bind="click: $parent.clickmarker.bind($data, $index())">
             <div id="events" class="eventodd" data-bind="css: { eventeven: $index()%2 }">
               <span data-bind="text: moment(event_time).format('DD/MM/YYYY hh:mm a')"></span>
@@ -36,7 +36,7 @@
       </ul>
     </div>
     <!-- DIALOG BOX -->
-    <div id="dialog" data-bind="title: dlgtitle">
+    <div id="dialog" data-bind="attr: {title: dlgtitle}">
       <p data-bind="text: dlgmsg"></p>
     </div>
     <script src="script/sgevent.js"></script>
